@@ -1,0 +1,15 @@
+{
+  "name": "coatsite",
+  "version": "0.0.1",
+  "description": "Should I wear a coat out today?",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app"
+  },
+  "author": "BlueKilvin",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
