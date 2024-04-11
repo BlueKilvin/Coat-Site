@@ -2,11 +2,14 @@
 
     <h1>Hello World</h1>
 
+    <p id="p1">This is the default text.</p>
+
+    <p>Bye</p>
+
     <script>
-        /**var data = fetch('https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m,precipitation&forecast_days=1')
-            .then(res => res.json()).then(data => console.log(data));
-        console.log('/n');**/
+
         var url = 'https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m,precipitation&forecast_days=1';
+        const average = array => array.reduce((a, b) => a + b) / array.length;
 
         async function getData(url) {
             const response = await fetch(url);
@@ -14,19 +17,23 @@
             return response.json();
         }
 
-        async function writeData(){
+        async function getTemperature(){
             const data = await getData(url);
-            const average = array => array.reduce((a, b) => a + b) / array.length;
-
-            console.log(average(data.hourly.temperature_2m));
+            const avg = average(data.hourly.temperature_2m);
+            return avg;
         }
 
-        document.write("hello");
-        writeData();
-        document.write("bye");
+        ;(async () => {
+            const da = await getTemperature();
+            console.log(da);
+
+            if (da > 20) {
+                document.getElementById('p1').innerHTML ="Don't need a coat mate it's "+da;
+            } else if (da < 20) {
+                document.getElementById('p1').innerHTML ="Bring a coat mate it's "+da;
+            }
+        })()
 
     </script>
-
-
 
 <%- include ("_footer.ejs"); %>
