@@ -1,15 +1,27 @@
-<%- include ("_header.ejs"); %>
+<%- include ("_partial/_header.ejs"); %>
 
-    <h1>Hello World</h1>
+    <div align="center">
+        <h1>Hello World</h1>
 
-    <p id="p1">This is the default text.</p>
+        <p id="p1">This is the default text.</p>
 
-    <p>Bye</p>
+        <p>Bye</p>
+    </div>
 
     <script>
 
-        var url = 'https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m,precipitation&forecast_days=1';
-        const average = array => array.reduce((a, b) => a + b) / array.length;
+        ;(async () => {
+            const url = getLocation();
+
+            const temp = await getTemperature(url);
+            console.log(temp);
+
+            if (temp > 20) {
+                document.getElementById('p1').innerHTML ="Don't need a coat mate it's "+temp;
+            } else if (temp < 20) {
+                document.getElementById('p1').innerHTML ="Bring a coat mate it's "+temp;
+            }
+        })()
 
         async function getData(url) {
             const response = await fetch(url);
@@ -17,23 +29,33 @@
             return response.json();
         }
 
-        async function getTemperature(){
+        async function getTemperature(url){
+            const average = array => array.reduce((a, b) => a + b) / array.length;
+
             const data = await getData(url);
             const avg = average(data.hourly.temperature_2m);
             return avg;
         }
 
-        ;(async () => {
-            const da = await getTemperature();
-            console.log(da);
+        async function isRainy(url){
+            const data = await getData(url);
+            
+            //TODO
+        }
 
-            if (da > 20) {
-                document.getElementById('p1').innerHTML ="Don't need a coat mate it's "+da;
-            } else if (da < 20) {
-                document.getElementById('p1').innerHTML ="Bring a coat mate it's "+da;
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    console.log(position.coords.latitude + " " + position.coords.longitude);
+                    return `https://api.open-meteo.com/v1/forecast?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&hourly=temperature_2m,precipitation&forecast_days=1`;
+                });
+            } else {
+                //Returns defualt geolocation set to London's (52.52, -0.12)
+                console.log("Geolocation could not be accessed. Using defualt values.");
+                return `https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=-0.12&hourly=temperature_2m,precipitation&forecast_days=1`;
             }
-        })()
+        }
 
     </script>
 
-<%- include ("_footer.ejs"); %>
+<%- include ("_partial/_footer.ejs"); %>
