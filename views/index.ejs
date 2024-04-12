@@ -12,7 +12,7 @@
 
         const options = {
             enableHighAccuracy: false,
-            timeout: 10000,
+            timeout: 15000,
             maximumAge: 0,
         };
         navigator.geolocation.getCurrentPosition(success, error, options);
@@ -25,9 +25,9 @@
                 const temp = await getTemperature(url);
                 console.log(temp);
 
-                if (temp > 20) {
+                if (temp >= 18) {
                     document.getElementById('message').innerHTML ="Don't need a coat mate it's "+temp.toFixed(2)+" C";
-                } else if (temp < 20) {
+                } else if (temp < 18) {
                     document.getElementById('message').innerHTML ="Bring a coat mate it's "+temp.toFixed(2)+" C";
                 }
             })()
