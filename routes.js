@@ -5,7 +5,7 @@ router.get("/", function(req,res){
     res.render("index");
 });
 
-router.get("/about", function(req,res){
+router.get("/views/about", function(req,res){
     res.render("about");
 });
 
