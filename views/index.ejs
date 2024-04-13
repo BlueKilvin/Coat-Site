@@ -18,15 +18,18 @@
         navigator.geolocation.getCurrentPosition(success, error, options);
 
         function success(position) {
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&hourly=temperature_2m,precipitation&forecast_days=1`;
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&hourly=temperature_2m,precipitation&timezone=GMT&forecast_days=1`;
             console.log(position.coords.latitude + " " + position.coords.longitude);
 
             ;(async () => {
                 const temp = await getTemperature(url);
-                console.log(temp);
+                const rain = await isRainy(url);
+                console.log(temp); console.log(rain);
 
-                if (temp >= 18) {
-                    document.getElementById('message').innerHTML ="Don't need a coat mate it's "+temp.toFixed(2)+" C";
+                if (temp >= 18 && !rain) {
+                    document.getElementById('message').innerHTML ="Don't need a coat mate. Enjoy!";
+                }else if (temp >=18 && rain) {
+                    document.getElementById('message').innerHTML ="At least bring an umbrella.";
                 } else if (temp < 18) {
                     document.getElementById('message').innerHTML ="Bring a coat mate it's "+temp.toFixed(2)+" C";
                 }
@@ -47,7 +50,7 @@
         async function getTemperature(url){
             const average = array => array.reduce((a, b) => a + b) / array.length;
 
-            const data = await getData(url);
+            const data = await getData(url); console.log(data);
             const avg = average(data.hourly.temperature_2m);
             return avg;
         }
@@ -55,7 +58,11 @@
         async function isRainy(url){
             const data = await getData(url);
             
-            //TODO
+            if(data.hourly.precipitation.some(e => e!=0)){
+                return true;
+            }else{
+                return false;
+            }
         }
 
     </script>
